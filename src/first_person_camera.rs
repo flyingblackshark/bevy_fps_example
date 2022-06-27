@@ -135,15 +135,17 @@ fn player_shooting(
                         ..Default::default()
                     })
                     .insert(Transform {
-                        translation: transform.translation+transform.rotation.mul_vec3(transform.translation).normalize()*0.5,
+                        translation: transform.translation+transform.rotation.mul_vec3(Vec3::new(0.0,0.0,-1.0)).normalize()*0.3,
                         ..Default::default()
                     })
                     .insert(RigidBody::Dynamic)
+                    .insert(GlobalTransform::identity())
+                    .insert(PhysicMaterial { friction: 1.0, density: 10.0, ..Default::default() })
                     .insert(CollisionShape::Cuboid {
                         half_extends: Vec3::new(0.1, 0.1, 0.1),
-                        border_radius: Some(0.3),
+                        border_radius: None,
                     })
-                    .insert(Velocity::from_linear(transform.rotation.mul_vec3(transform.translation).normalize()*50.0));
+                    .insert(Velocity::from_linear(transform.rotation.mul_vec3(Vec3::new(0.0,0.0,-1.0)).normalize()*50.0));
                    },
                     _ => (),
                 }
