@@ -26,35 +26,41 @@ fn setup(
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     
-    // HeightField
-    // commands
-    //     .spawn_bundle((Transform::identity(), GlobalTransform::identity()))
-    //     .insert(RigidBody::Static)
-    //     .insert(CollisionShape::HeightField {
-    //         size: Vec2::new(20., 20.),
-    //         heights: vec![
-    //             vec![1.5, 0.8, 0., 0., 3.0],
-    //             vec![0.8, 0.2, 0., 0., 3.0],
-    //             vec![0., 0.5, 0., 0., 3.0],
-    //             vec![0., 0., 0.6, 0., 3.0],
-    //             vec![3., 3., 3., 3., 3.0],
-    //         ],
-    //     });
+    //HeightField
     commands
-        .spawn_bundle(PbrBundle {
-            mesh: meshes.add(Mesh::from(shape:: Plane{size:1000.0})),
-            material: materials.add(Color::BLUE.into()),
-            ..Default::default()
-        })
-        .insert(Transform {
-            translation: Vec3::new(0.0,0.0, 0.0),
-            ..Default::default()
-        })
+        .spawn_bundle((Transform::identity(), GlobalTransform::identity()))
         .insert(RigidBody::Static)
-        .insert(CollisionShape::Cuboid {
-            half_extends: Vec3::new(500.0, 0.01, 500.0),
-            border_radius: Some(0.0),
+        .insert(CollisionShape::HeightField {
+            size: Vec2::new(100., 100.),
+            heights: vec![
+                vec![0.0,0.0,0.0,0.0,0.0],
+                vec![0.0,0.0,0.0,0.0,0.0],
+                vec![0.0,0.0,0.0,0.0,0.0],
+                vec![0.0,0.0,0.0,0.0,0.0],
+                vec![0.0,0.0,0.0,0.0,0.0],
+                // vec![1.5, 0.8, 0., 0., 3.0],
+                // vec![0.8, 0.2, 0., 0., 3.0],
+                // vec![0., 0.5, 0., 0., 3.0],
+                // vec![0., 0., 0.6, 0., 3.0],
+                // vec![3., 3., 3., 3., 3.0],
+            ],
         });
+    // Plane
+    // commands
+    //     .spawn_bundle(PbrBundle {
+    //         mesh: meshes.add(Mesh::from(shape:: Plane{size:1000.0})),
+    //         material: materials.add(Color::BLUE.into()),
+    //         ..Default::default()
+    //     })
+    //     .insert(Transform {
+    //         translation: Vec3::new(0.0,0.0, 0.0),
+    //         ..Default::default()
+    //     })
+    //     .insert(RigidBody::Static)
+    //     .insert(CollisionShape::Cuboid {
+    //         half_extends: Vec3::new(500.0, 0.01, 500.0),
+    //         border_radius: Some(0.0),
+    //     });
     //MainCamera
     commands
         .spawn_bundle(PerspectiveCameraBundle {
@@ -76,88 +82,6 @@ fn setup(
         .insert(FirstPersonCamera)
         .insert(RotationConstraints::lock());
 
-    // Cube (with radius)
-    commands
-        .spawn_bundle(PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Cube { size: 1.0 })),
-            material: materials.add(Color::BLUE.into()),
-            ..Default::default()
-        })
-        .insert(Transform {
-            translation: Vec3::new(7.0, 15., 7.0),
-            ..Default::default()
-        })
-        .insert(RigidBody::Dynamic)
-        .insert(CollisionShape::Cuboid {
-            half_extends: Vec3::new(0.3, 0.3, 0.3),
-            border_radius: Some(0.3),
-        });
-
-    // Cube (no radius)
-    commands
-        .spawn_bundle(PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Cube { size: 1.0 })),
-            material: materials.add(Color::rgb(0.3, 0.5, 0.3).into()),
-            ..Default::default()
-        })
-        .insert(GlobalTransform::identity())
-        .insert(Transform {
-            translation: Vec3::new(0.0, 3.0, 0.0),
-            ..Default::default()
-        })
-        .insert(RigidBody::Dynamic)
-        .insert(CollisionShape::Cuboid {
-            half_extends: Vec3::new(0.5, 0.5, 0.5),
-            border_radius: None,
-        });
-
-    // ConvexHull (no radius)
-    // commands
-    //     .spawn_bundle(PbrBundle {
-    //         mesh: meshes.add(Mesh::from(shape::Cube { size: 2.0 })),
-    //         material: materials.add(Color::RED.into()),
-    //         ..Default::default()
-    //     })
-    //     .insert(Transform {
-    //         translation: Vec3::new(-2.0, 15., 8.0),
-    //         ..Default::default()
-    //     })
-    //     .insert(RigidBody::Dynamic)
-    //     .insert(CollisionShape::ConvexHull {
-    //         points: vec![
-    //             Vec3::new(-1.0, -1.0, -1.0),
-    //             Vec3::new(-1.0, -1.0, 1.0),
-    //             Vec3::new(-1.0, 1.0, -1.0),
-    //             Vec3::new(1.0, -1.0, -1.0),
-    //             Vec3::new(-1.0, 1.0, 1.0),
-    //             Vec3::new(1.0, -1.0, 1.0),
-    //             Vec3::new(1.0, 1.0, 1.0),
-    //             Vec3::new(1.0, 1.0, -1.0),
-    //             Vec3::new(0.0, 1.4, 0.0),
-    //             Vec3::new(0.0, -1.4, 0.0),
-    //             Vec3::new(0.0, 0.0, -1.6),
-    //             Vec3::new(0.0, 0.0, 1.6),
-    //         ],
-    //         border_radius: None,
-    //     });
-
-    // Sphere
-    commands
-        .spawn_bundle(PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Icosphere {
-                radius: 1.0,
-                ..Default::default()
-            })),
-            material: materials.add(Color::rgb(0.3, 0.5, 0.3).into()),
-            ..Default::default()
-        })
-        .insert(Transform {
-            translation: Vec3::new(3.0, 15., 3.0),
-            ..Default::default()
-        })
-        .insert(GlobalTransform::identity())
-        .insert(RigidBody::Dynamic)
-        .insert(CollisionShape::Sphere { radius: 1.0 });
 
     // Cylinder
     commands
@@ -181,27 +105,6 @@ fn setup(
             radius: 0.5,
         });
 
-    // Cone
-    commands
-        .spawn_bundle(PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Capsule {
-                radius: 0.5,
-                depth: 2.0,
-                ..Default::default()
-            })),
-            material: materials.add(Color::RED.into()),
-            ..Default::default()
-        })
-        .insert(Transform {
-            translation: Vec3::new(5., 15., -7.),
-            ..Default::default()
-        })
-        .insert(GlobalTransform::identity())
-        .insert(RigidBody::Dynamic)
-        .insert(CollisionShape::Cone {
-            half_height: 2.0,
-            radius: 1.0,
-        });
 
     // Capsule
     commands
@@ -226,13 +129,38 @@ fn setup(
         });
 
     // light
-    commands.spawn_bundle(PointLightBundle {
-        transform: Transform::from_xyz(-4.0, 9.0, -4.0),
-        point_light:PointLight{
-            range:100.0,
-            intensity:200.0,
-            ..Default::default()
+    // commands.spawn_bundle(PointLightBundle {
+    //     transform: Transform::from_xyz(-4.0, 9.0, -4.0),
+    //     point_light:PointLight{
+    //         range:100.0,
+    //         intensity:200.0,
+    //         ..Default::default()
+    //     },
+    //     ..Default::default()
+    // });
+    // directional 'sun' light
+    const HALF_SIZE: f32 = 10.0;
+    commands.spawn_bundle(DirectionalLightBundle {
+        directional_light: DirectionalLight {
+            // Configure the projection to better fit the scene
+            shadow_projection: OrthographicProjection {
+                left: -HALF_SIZE,
+                right: HALF_SIZE,
+                bottom: -HALF_SIZE,
+                top: HALF_SIZE,
+                near: -10.0 * HALF_SIZE,
+                far: 10.0 * HALF_SIZE,
+                ..default()
+            },
+            shadows_enabled: true,
+            ..default()
         },
-        ..Default::default()
+        transform: Transform {
+            translation: Vec3::new(0.0, 2.0, 0.0),
+            rotation: Quat::from_rotation_x(-std::f32::consts::FRAC_PI_4),
+            ..default()
+        },
+        ..default()
     });
+
 }

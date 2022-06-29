@@ -135,7 +135,7 @@ fn player_shooting(
                         ..Default::default()
                     })
                     .insert(Transform {
-                        translation: transform.translation+transform.rotation.mul_vec3(Vec3::new(0.0,0.0,-1.0)).normalize()*0.3,
+                        translation: transform.translation+transform.forward()*0.3,
                         ..Default::default()
                     })
                     .insert(RigidBody::Dynamic)
@@ -145,7 +145,7 @@ fn player_shooting(
                         half_extends: Vec3::new(0.1, 0.1, 0.1),
                         border_radius: None,
                     })
-                    .insert(Velocity::from_linear(transform.rotation.mul_vec3(Vec3::new(0.0,0.0,-1.0)).normalize()*50.0));
+                    .insert(Velocity::from_linear(transform.forward()*50.0));
                    },
                     _ => (),
                 }

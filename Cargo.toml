@@ -7,4 +7,4 @@ edition = "2021"
 
 [dependencies]
 bevy = { version = "0.7" }
-heron = {version="3.1.0", features = ["3d"] }
+heron = {version="3.1.0", features = ["debug-3d"] }
