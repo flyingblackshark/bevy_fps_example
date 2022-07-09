@@ -1,7 +1,10 @@
+use std::ops::Mul;
+
 use bevy::prelude::*;
 use bevy::ecs::event::{Events, ManualEventReader};
 use bevy::input::mouse::MouseMotion;
 use heron::prelude::*;
+use heron::rapier_plugin::PhysicsWorld;
 pub struct FirstPersonCameraPlugin;
 //Modified https://github.com/sburris0/bevy_flycam
 #[derive(Default)]
@@ -43,7 +46,7 @@ impl Plugin for FirstPersonCameraPlugin {
         .add_startup_system(initial_grab_cursor)
         .add_system(player_move)
         .add_system(player_look)
-        .add_system(player_shooting)
+       
         .add_system(cursor_grab);
     }
 }
@@ -93,7 +96,7 @@ fn player_look(
 ) {
     let window = windows.get_primary().unwrap();
     let mut delta_state = state.as_mut();
-    for mut transform in query.iter_mut() {
+    let mut transform=query.single_mut() ;
         for ev in delta_state.reader_motion.iter(&motion) {
             if window.cursor_locked() {
                 // Using smallest of height or width ensures equal vertical and horizontal sensitivity
@@ -109,56 +112,10 @@ fn player_look(
             transform.rotation = Quat::from_axis_angle(Vec3::Y, delta_state.yaw)
                 * Quat::from_axis_angle(Vec3::X, delta_state.pitch);
         }
-    }
+    
 }
-fn player_shooting(
-    mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
-    keys: Res<Input<MouseButton>>,
 
-    windows: Res<Windows>,
-    
-    mut query: Query<&mut Transform, With<FirstPersonCamera>>,
-) {
-    let window = windows.get_primary().unwrap();
-    for mut transform in query.iter_mut() {
-        for key in keys.get_pressed() {
-            if window.cursor_locked() {
-                match key {
-                   MouseButton::Left=>{
-                    //shoot
-                    commands
-                    .spawn_bundle(PbrBundle {
-                        mesh: meshes.add(Mesh::from(shape::Cube { size: 0.2 })),
-                        material: materials.add(Color::BLUE.into()),
-                        ..Default::default()
-                    })
-                    .insert(Transform {
-                        translation: transform.translation+transform.forward()*0.3,
-                        ..Default::default()
-                    })
-                    .insert(RigidBody::Dynamic)
-                    .insert(GlobalTransform::identity())
-                    .insert(PhysicMaterial { friction: 1.0, density: 10.0, ..Default::default() })
-                    .insert(CollisionShape::Cuboid {
-                        half_extends: Vec3::new(0.1, 0.1, 0.1),
-                        border_radius: None,
-                    })
-                    .insert(Velocity::from_linear(transform.forward()*50.0));
-                   },
-                    _ => (),
-                }
-            }
-        }
-    }
-}
-// fn shoot_bullet(  commands: &Commands,
-//    meshes: &ResMut<Assets<Mesh>>,
-//     materials: &ResMut<Assets<StandardMaterial>>,
-//     ){
-    
-// }
+
 fn cursor_grab(keys: Res<Input<KeyCode>>, mut windows: ResMut<Windows>) {
     let window = windows.get_primary_mut().unwrap();
     if keys.just_pressed(KeyCode::Escape) {

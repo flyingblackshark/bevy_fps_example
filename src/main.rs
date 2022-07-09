@@ -1,9 +1,10 @@
 use bevy::prelude::*;
 
 use heron::prelude::*;
-
+use object_system::*;
 use first_person_camera::*;
-
+use shooting_system::*;
+mod object_system;
 mod shooting_system;
 mod first_person_camera;
 fn main() {
@@ -13,6 +14,8 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_plugin(PhysicsPlugin::default())
         .add_plugin(FirstPersonCameraPlugin)
+        .add_plugin(ShootingSystemPlugin)
+        .add_plugin(ObjectSystemPlugin)
         .insert_resource(MovementSettings {
             sensitivity: 0.00015, // default: 0.00012
             speed: 12.0,          // default: 12.0
@@ -103,7 +106,8 @@ fn setup(
         .insert(CollisionShape::Cylinder {
             half_height: 1.0,
             radius: 0.5,
-        });
+        })
+        .insert(HealthStatus { hp: 100 });
 
 
     // Capsule
@@ -126,7 +130,8 @@ fn setup(
         .insert(CollisionShape::Capsule {
             radius: 0.5,
             half_segment: 1.0,
-        });
+        })
+        .insert(HealthStatus{ hp: 100 });
 
     // light
     // commands.spawn_bundle(PointLightBundle {
