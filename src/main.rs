@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-
+use bevy::scene::*;
 use heron::prelude::*;
 use object_system::*;
 use first_person_camera::*;
@@ -27,8 +27,15 @@ fn setup(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
+    asset_server: Res<AssetServer>,
+   
 ) {
-    
+    commands.spawn_bundle(OrthographicCameraBundle::new_2d());
+    commands.spawn_bundle(SpriteBundle {
+        texture: asset_server.load("dot/dot.png"),
+        ..default()
+    });
+
     //HeightField
     commands
         .spawn_bundle((Transform::identity(), GlobalTransform::identity()))
@@ -83,9 +90,23 @@ fn setup(
             half_segment: 1.0,
         })
         .insert(FirstPersonCamera)
-        .insert(RotationConstraints::lock());
-
-
+        .insert(RotationConstraints::lock())
+        .with_children(|parent| {  
+            let my_gltf=asset_server.load("models/rifle.gltf#Scene0");
+            //let mut local_transform=Transform::from_scale(Vec3::new(0.1,0.1,0.1));
+            //local_transform.translation.x=2.0;
+            let mut local_transform=Transform::from_xyz(6.0, -3., -29.0).looking_at(Vec3::new(-100., 4., -0.), Vec3::Y);
+            parent.spawn_bundle(TransformBundle {
+                local: local_transform,
+                global: GlobalTransform::identity(),
+            }).with_children(|parent| {
+                parent.spawn_scene(my_gltf);
+            });
+          
+            
+        });
+    //Rifle Model
+    for _i in 0..20{
     // Cylinder
     commands
         .spawn_bundle(PbrBundle {
@@ -98,7 +119,7 @@ fn setup(
             ..Default::default()
         })
         .insert(Transform {
-            translation: Vec3::new(3., 15., -7.),
+            translation: Vec3::new(3., 15.+_i as f32, -7.),
             ..Default::default()
         })
         .insert(GlobalTransform::identity())
@@ -122,7 +143,7 @@ fn setup(
             ..Default::default()
         })
         .insert(Transform {
-            translation: Vec3::new(0., 15., 0.),
+            translation: Vec3::new(0., 15.+_i as f32, 0.),
             ..Default::default()
         })
         .insert(GlobalTransform::identity())
@@ -132,7 +153,7 @@ fn setup(
             half_segment: 1.0,
         })
         .insert(HealthStatus{ hp: 100 });
-
+    }
     // light
     // commands.spawn_bundle(PointLightBundle {
     //     transform: Transform::from_xyz(-4.0, 9.0, -4.0),

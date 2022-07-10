@@ -46,8 +46,8 @@ impl Plugin for FirstPersonCameraPlugin {
         .add_startup_system(initial_grab_cursor)
         .add_system(player_move)
         .add_system(player_look)
-       
-        .add_system(cursor_grab);
+       ;
+        //.add_system(cursor_grab);
     }
 }
 #[derive(Debug, Component)]
